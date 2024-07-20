@@ -1,6 +1,5 @@
 package com.test.warehouse.entity;
 
-import com.test.warehouse.enumerated.Role;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -16,9 +15,8 @@ public class User {
     @Column(name = "user_name")
     private String userName;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "role")
-    private Role role;
+    private String role;
 
     @Column(name = "deleted")
     private boolean deleted;
