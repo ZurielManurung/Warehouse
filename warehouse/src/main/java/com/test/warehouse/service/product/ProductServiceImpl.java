@@ -54,7 +54,7 @@ public class ProductServiceImpl implements ProductService{
         String name = productDTO.getName();
         checkName(name);
 
-        Product product = getById(id);
+        Product product = getNotDeletedById(id);
         product.setName(name);
         product.setQuantity(productDTO.getQuantity());
         product.setProductType(productDTO.getProductType());
@@ -65,7 +65,7 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public void deleteProduct(long id) {
-        Product product = getById(id);
+        Product product = getNotDeletedById(id);
         product.setDeleted(Boolean.TRUE);
         product.setDateModified(Constants.getTimestamp());
         repository.save(product);
@@ -74,7 +74,7 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public ResponseProductDTO updateProductIncrease(long id, RequestProductQuantityDTO productQuantityDTO) {
 
-        Product product = getById(id);
+        Product product = getNotDeletedById(id);
         int quantityOld = product.getQuantity();
         int quantityNew = productQuantityDTO.getQuantity();
 
@@ -91,7 +91,7 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public ResponseProductDTO updateProductRent(long id, RequestProductQuantityDTO productQuantityDTO) {
 
-        Product product = getById(id);
+        Product product = getNotDeletedById(id);
         int quantityNow = product.getQuantity();
         int alreadyRent = product.getRent();
         int quantityRent = productQuantityDTO.getQuantity();
@@ -110,7 +110,7 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public ResponseProductDTO updateProductReturn(long id, RequestProductQuantityDTO productQuantityDTO) {
 
-        Product product = getById(id);
+        Product product = getNotDeletedById(id);
         int quantityNow = product.getQuantity();
         int quantityRent = product.getRent();
         int quantityReturn = productQuantityDTO.getQuantity();
@@ -146,5 +146,12 @@ public class ProductServiceImpl implements ProductService{
     private void checkName(String name){
         if (repository.findByName(name).isPresent())
             throw new DataErrorException("Product Name is already exist");
+    }
+
+    private Product getNotDeletedById(long id){
+        Product product = getById(id);
+        if(product.isDeleted())
+            throw new DataErrorException("Product already deleted");
+        return product;
     }
 }
