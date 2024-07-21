@@ -31,6 +31,8 @@ public class ProductServiceImpl implements ProductService{
         return convert(getById(id));
     }
 
+    // SOAL 02
+    // Menambahkan data product
     @Override
     public ResponseProductDTO createProduct(RequestProductDTO productDTO) {
 
@@ -71,57 +73,61 @@ public class ProductServiceImpl implements ProductService{
         repository.save(product);
     }
 
+    // SOAL 03
+    // Menambahkan quantity ke barang yang sudah ada
+
     @Override
     public ResponseProductDTO updateProductIncrease(long id, RequestProductQuantityDTO productQuantityDTO) {
 
-        Product product = getNotDeletedById(id);
-        int quantityOld = product.getQuantity();
-        int quantityNew = productQuantityDTO.getQuantity();
+        Product product = getNotDeletedById(id); // Cek product dengan id terdelete atau tidak
+        int quantity= product.getQuantity(); // mengambil data quantity
+        int quantityIncr= productQuantityDTO.getQuantity(); // mengambil data input
 
-        if (quantityOld > quantityNew)
-            throw new DataErrorException("Quantity sebelumnya lebih banyak dari sekarang");
-        if (quantityOld == quantityNew)
-            throw new DataErrorException("Quantity sebelumnya sama dengan sekarang");
+        quantity += quantityIncr; // logic ditambahkan data sebelum dan data input
 
-        product.setQuantity(quantityNew);
+        product.setQuantity(quantity); // set ke quantity
         product.setDateModified(Constants.getTimestamp());
         return convert(repository.save(product));
     }
 
+    // SOAL 04
+    // Meminjam barang dengan validasi
     @Override
     public ResponseProductDTO updateProductRent(long id, RequestProductQuantityDTO productQuantityDTO) {
 
-        Product product = getNotDeletedById(id);
-        int quantityNow = product.getQuantity();
-        int alreadyRent = product.getRent();
-        int quantityRent = productQuantityDTO.getQuantity();
+        Product product = getNotDeletedById(id); // Cek product dengan id terdelete atau tidak
+        int quantityNow = product.getQuantity(); // mengambil data quantity
+        int alreadyRent = product.getRent(); // mengambil data rent
+        int quantityRent = productQuantityDTO.getQuantity(); // mengambil data quantity
 
-        if (quantityNow < quantityRent)
+        if (quantityNow < quantityRent) // validasi jika barang yang di pinjam harus sama / kurang dari barang yang ada
             throw new DataErrorException("Product yang dipinjam lebih banyak dari yang tersedia");
 
-        quantityNow -= quantityRent;
-        alreadyRent += quantityRent;
-        product.setQuantity(quantityNow);
-        product.setRent(alreadyRent);
+        quantityNow -= quantityRent; // mengurangi quantity sekarang karena dipinjam
+        alreadyRent += quantityRent; // menambahkan yang di pinjam
+        product.setQuantity(quantityNow);  // set ke quantity
+        product.setRent(alreadyRent); // set ke rent
         product.setDateModified(Constants.getTimestamp());
         return convert(repository.save(product));
     }
 
+    // SOAL 05
+    // Mengembalikan barang
     @Override
     public ResponseProductDTO updateProductReturn(long id, RequestProductQuantityDTO productQuantityDTO) {
 
-        Product product = getNotDeletedById(id);
-        int quantityNow = product.getQuantity();
-        int quantityRent = product.getRent();
-        int quantityReturn = productQuantityDTO.getQuantity();
+        Product product = getNotDeletedById(id); // Cek product dengan id terdelete atau tidak
+        int quantityNow = product.getQuantity(); // mengambil data quantity
+        int quantityRent = product.getRent(); // mengambil data rent
+        int quantityReturn = productQuantityDTO.getQuantity(); // mengambil data quantity
 
-        if (quantityRent < quantityReturn)
+        if (quantityRent < quantityReturn) // validasi barang yang di kembalikan harus kurang dari atau sama dengan barang yang dipinjam
             throw new DataErrorException("Product yang dikembalikan lebih banyak dari yang dipinjam");
 
-        quantityRent -= quantityReturn;
-        quantityNow += quantityReturn;
-        product.setQuantity(quantityNow);
-        product.setRent(quantityRent);
+        quantityRent -= quantityReturn; // mengurangi rent sekarang karena dikembalikan
+        quantityNow += quantityReturn; // menambahkan quantity karena barang kembali
+        product.setQuantity(quantityNow); // set ke quantity
+        product.setRent(quantityRent); // set ke rent
         product.setDateModified(Constants.getTimestamp());
         return convert(repository.save(product));
     }
