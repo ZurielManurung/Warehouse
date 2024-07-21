@@ -16,6 +16,8 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService{
 
+    //TODO error query user -> hipotesa karena user harus menggunakan petik dua ("), penulisan Postgresql
+
     @Autowired
     private UserRepository repository;
 

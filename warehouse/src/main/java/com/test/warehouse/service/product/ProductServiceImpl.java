@@ -3,6 +3,7 @@ package com.test.warehouse.service.product;
 import com.test.warehouse.Exception.DataErrorException;
 import com.test.warehouse.Util.Constants;
 import com.test.warehouse.dto.request.product.RequestProductDTO;
+import com.test.warehouse.dto.request.product.RequestProductQuantityDTO;
 import com.test.warehouse.dto.response.product.ResponseProductDTO;
 import com.test.warehouse.entity.Product;
 import com.test.warehouse.repository.ProductRepository;
@@ -54,8 +55,8 @@ public class ProductServiceImpl implements ProductService{
 
         Product product = getById(id);
         product.setName(name);
-        product.setQuantity(product.getQuantity());
-        product.setProductType(product.getProductType());
+        product.setQuantity(productDTO.getQuantity());
+        product.setProductType(productDTO.getProductType());
         product.setDeleted(Boolean.FALSE);
         product.setDateModified(Constants.getTimestamp());
         return convert(repository.save(product));
@@ -67,6 +68,39 @@ public class ProductServiceImpl implements ProductService{
         product.setDeleted(Boolean.TRUE);
         product.setDateModified(Constants.getTimestamp());
         repository.save(product);
+    }
+
+    @Override
+    public ResponseProductDTO updateProductIncrease(long id, RequestProductQuantityDTO productQuantityDTO) {
+
+        Product product = getById(id);
+        int quantityOld = product.getQuantity();
+        int quantityNew = productQuantityDTO.getQuantity();
+
+        if (quantityOld > quantityNew)
+            throw new DataErrorException("Quantity sebelumnya lebih banyak dari sekarang");
+        if (quantityOld == quantityNew)
+            throw new DataErrorException("Quantity sebelumnya sama dengan sekarang");
+
+        product.setQuantity(quantityNew);
+        product.setDateModified(Constants.getTimestamp());
+        return convert(repository.save(product));
+    }
+
+    @Override
+    public ResponseProductDTO updateProductRent(long id, RequestProductQuantityDTO productQuantityDTO) {
+
+        Product product = getById(id);
+        int quantityNow = product.getQuantity();
+        int quantityRent = productQuantityDTO.getQuantity();
+
+        if (quantityNow < quantityRent)
+            throw new DataErrorException("Product yang dipinjam lebih banyak dari yang tersedia");
+
+        quantityNow -= quantityRent;
+        product.setQuantity(quantityNow);
+        product.setDateModified(Constants.getTimestamp());
+        return convert(repository.save(product));
     }
 
     private ResponseProductDTO convert(Product product){

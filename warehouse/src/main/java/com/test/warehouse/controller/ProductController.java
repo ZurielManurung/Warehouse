@@ -2,6 +2,7 @@ package com.test.warehouse.controller;
 
 import com.test.warehouse.Util.Constants;
 import com.test.warehouse.dto.request.product.RequestProductDTO;
+import com.test.warehouse.dto.request.product.RequestProductQuantityDTO;
 import com.test.warehouse.dto.response.product.ResponseProductDTO;
 import com.test.warehouse.service.product.ProductService;
 import jakarta.validation.Valid;
@@ -95,5 +96,35 @@ public class ProductController {
             status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
         return ResponseEntity.status(status).body("Delete Product Berhasil");
+    }
+
+    @PutMapping(value = PRODUCT + "/update/increase/{id}")
+    public ResponseEntity<ResponseProductDTO> updateProductIncrease(@PathVariable("id") long id,
+                                                                    @Valid @RequestBody RequestProductQuantityDTO requestProductQuantityDTO){
+        HttpStatus status;
+        try {
+            ResponseProductDTO response = productService.updateProductIncrease(id, requestProductQuantityDTO);
+            status = HttpStatus.OK;
+            return ResponseEntity.status(status).body(response);
+        }catch (Exception e){
+            logger.error("Failed to update Product Quantity", e);
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+            return ResponseEntity.status(status).body(null);
+        }
+    }
+
+    @PutMapping(value = PRODUCT + "/update/rent/{id}")
+    public ResponseEntity<ResponseProductDTO> updateProductRent(@PathVariable("id") long id,
+                                                                @Valid @RequestBody RequestProductQuantityDTO requestProductQuantityDTO){
+        HttpStatus status;
+        try {
+            ResponseProductDTO response = productService.updateProductRent(id, requestProductQuantityDTO);
+            status = HttpStatus.OK;
+            return ResponseEntity.status(status).body(response);
+        }catch (Exception e){
+            logger.error("Failed to update Product Quantity", e);
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+            return ResponseEntity.status(status).body(null);
+        }
     }
 }
