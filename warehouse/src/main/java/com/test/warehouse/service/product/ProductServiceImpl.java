@@ -41,6 +41,7 @@ public class ProductServiceImpl implements ProductService{
         product.setId(0);
         product.setName(name);
         product.setQuantity(productDTO.getQuantity());
+        product.setRent(0);
         product.setProductType(productDTO.getProductType());
         product.setDeleted(Boolean.FALSE);
         product.setDateCreated(Constants.getTimestamp());
@@ -92,13 +93,35 @@ public class ProductServiceImpl implements ProductService{
 
         Product product = getById(id);
         int quantityNow = product.getQuantity();
+        int alreadyRent = product.getRent();
         int quantityRent = productQuantityDTO.getQuantity();
 
         if (quantityNow < quantityRent)
             throw new DataErrorException("Product yang dipinjam lebih banyak dari yang tersedia");
 
         quantityNow -= quantityRent;
+        alreadyRent += quantityRent;
         product.setQuantity(quantityNow);
+        product.setRent(alreadyRent);
+        product.setDateModified(Constants.getTimestamp());
+        return convert(repository.save(product));
+    }
+
+    @Override
+    public ResponseProductDTO updateProductReturn(long id, RequestProductQuantityDTO productQuantityDTO) {
+
+        Product product = getById(id);
+        int quantityNow = product.getQuantity();
+        int quantityRent = product.getRent();
+        int quantityReturn = productQuantityDTO.getQuantity();
+
+        if (quantityRent < quantityReturn)
+            throw new DataErrorException("Product yang dikembalikan lebih banyak dari yang dipinjam");
+
+        quantityRent -= quantityReturn;
+        quantityNow += quantityReturn;
+        product.setQuantity(quantityNow);
+        product.setRent(quantityRent);
         product.setDateModified(Constants.getTimestamp());
         return convert(repository.save(product));
     }
@@ -108,6 +131,7 @@ public class ProductServiceImpl implements ProductService{
         productDTO.setId(product.getId());
         productDTO.setName(product.getName());
         productDTO.setQuantity(product.getQuantity());
+        productDTO.setRent(product.getRent());
         productDTO.setProductType(product.getProductType());
         return productDTO;
     }

@@ -18,6 +18,9 @@ public class Product {
     @Column(name = "quantity")
     private Integer quantity;
 
+    @Column(name = "rent")
+    private Integer rent;
+
     @Column(name = "product_type")
     private String productType;
 

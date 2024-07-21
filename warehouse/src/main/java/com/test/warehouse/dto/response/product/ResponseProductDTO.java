@@ -6,5 +6,5 @@ import lombok.Data;
 public class ResponseProductDTO {
     private Long id;
     private String name, productType;
-    private Integer quantity;
+    private Integer quantity, rent;
 }

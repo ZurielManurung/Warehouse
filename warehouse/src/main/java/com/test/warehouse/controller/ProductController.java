@@ -127,4 +127,19 @@ public class ProductController {
             return ResponseEntity.status(status).body(null);
         }
     }
+
+    @PutMapping(value = PRODUCT + "/update/return/{id}")
+    public ResponseEntity<ResponseProductDTO> updateProductReturn(@PathVariable("id") long id,
+                                                                  @Valid @RequestBody RequestProductQuantityDTO requestProductQuantityDTO){
+        HttpStatus status;
+        try {
+            ResponseProductDTO response = productService.updateProductReturn(id, requestProductQuantityDTO);
+            status = HttpStatus.OK;
+            return ResponseEntity.status(status).body(response);
+        }catch (Exception e){
+            logger.error("Failed to update Product Quantity", e);
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+            return ResponseEntity.status(status).body(null);
+        }
+    }
 }

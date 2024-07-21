@@ -21,4 +21,6 @@ public interface ProductService {
     ResponseProductDTO updateProductIncrease(long id, RequestProductQuantityDTO requestProductQuantityDTO);
 
     ResponseProductDTO updateProductRent(long id, RequestProductQuantityDTO requestProductQuantityDTO);
+
+    ResponseProductDTO updateProductReturn(long id, RequestProductQuantityDTO requestProductQuantityDTO);
 }
