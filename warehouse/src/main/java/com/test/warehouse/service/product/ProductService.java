@@ -1,19 +1,19 @@
 package com.test.warehouse.service.product;
 
 import com.test.warehouse.dto.request.product.RequestProductDTO;
-import com.test.warehouse.dto.response.product.ResponsePorductDTO;
+import com.test.warehouse.dto.response.product.ResponseProductDTO;
 
 import java.util.List;
 
 public interface ProductService {
 
-    List<ResponsePorductDTO> getAllProduct();
+    List<ResponseProductDTO> getAllProduct();
 
-    ResponsePorductDTO getByIdProduct(long id);
+    ResponseProductDTO getByIdProduct(long id);
 
-    ResponsePorductDTO createProduct(RequestProductDTO productDTO);
+    ResponseProductDTO createProduct(RequestProductDTO productDTO);
 
-    ResponsePorductDTO updateProduct(long id, RequestProductDTO productDTO);
+    ResponseProductDTO updateProduct(long id, RequestProductDTO productDTO);
 
     void deleteProduct(long id);
 }

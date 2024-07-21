@@ -3,7 +3,7 @@ package com.test.warehouse.service.product;
 import com.test.warehouse.Exception.DataErrorException;
 import com.test.warehouse.Util.Constants;
 import com.test.warehouse.dto.request.product.RequestProductDTO;
-import com.test.warehouse.dto.response.product.ResponsePorductDTO;
+import com.test.warehouse.dto.response.product.ResponseProductDTO;
 import com.test.warehouse.entity.Product;
 import com.test.warehouse.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,18 +20,18 @@ public class ProductServiceImpl implements ProductService{
     private ProductRepository repository;
 
     @Override
-    public List<ResponsePorductDTO> getAllProduct() {
+    public List<ResponseProductDTO> getAllProduct() {
         List<Product> product = repository.findByDeleted(Boolean.FALSE);
         return product.stream().map(this::convert).collect(Collectors.toList());
     }
 
     @Override
-    public ResponsePorductDTO getByIdProduct(long id) {
+    public ResponseProductDTO getByIdProduct(long id) {
         return convert(getById(id));
     }
 
     @Override
-    public ResponsePorductDTO createProduct(RequestProductDTO productDTO) {
+    public ResponseProductDTO createProduct(RequestProductDTO productDTO) {
 
         String name = productDTO.getName();
         checkName(name);
@@ -47,7 +47,7 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public ResponsePorductDTO updateProduct(long id, RequestProductDTO productDTO) {
+    public ResponseProductDTO updateProduct(long id, RequestProductDTO productDTO) {
 
         String name = productDTO.getName();
         checkName(name);
@@ -69,8 +69,8 @@ public class ProductServiceImpl implements ProductService{
         repository.save(product);
     }
 
-    private ResponsePorductDTO convert(Product product){
-        ResponsePorductDTO productDTO = new ResponsePorductDTO();
+    private ResponseProductDTO convert(Product product){
+        ResponseProductDTO productDTO = new ResponseProductDTO();
         productDTO.setId(product.getId());
         productDTO.setName(product.getName());
         productDTO.setQuantity(product.getQuantity());
